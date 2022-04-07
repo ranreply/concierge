@@ -1,0 +1,60 @@
+#version: "3"
+#services:
+#  docker-consmysql:
+#    restart: always
+#    container_name: mysql1
+#    image: mysql
+##    volumes:
+##      - mysql_bkp_concierge:/var/lib/mysql
+#    environment:
+#      MYSQL_DATABASE: airlines
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_ROOT_HOST: '%'
+#    ports:
+#      - "3307:3306"
+#    networks:
+#      - microservices_bridge
+#  concierge:
+#    restart:  "no"
+#    container_name: concierge
+#    build: ./
+#    expose:
+#      - 8083
+#    ports:
+#      - 8083:8083
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://docker-consmysql:3306/airlines
+#      eureka.client.serviceUrl.defaultZone: http://192.168.65.2:8761/eureka/
+#    depends_on:
+#      - docker-consmysql
+#    networks:
+#      - microservices_bridge
+#networks:
+#  microservices_bridge:
+version: "3"
+services:
+  concierge:
+    image: airlineconcierge_concierge
+    ports:
+      - "8083:8083"
+    networks:
+      - microservices_bridge
+    depends_on:
+      - docker-consmysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://docker-consmysql:3306/airlines
+      eureka.client.serviceUrl.defaultZone: http://192.168.65.2:8761/eureka
+      spring.application.name: concierge
+      eureka.instance.appname: concierge
+  docker-consmysql:
+    image: mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - microservices_bridge
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=airlines
+
+networks:
+  microservices_bridge:
