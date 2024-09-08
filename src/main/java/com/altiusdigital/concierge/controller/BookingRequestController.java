@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path="/")
-@EnableEurekaClient
+@EnableDiscoveryClient
 public class BookingRequestController {
     @Autowired(required = true)
     IRequestRepo reqRepo;
@@ -28,6 +28,8 @@ public class BookingRequestController {
         request.setHotel("yes");
         request.setCab ("yes");
         System.out.println(" Before Saving to table "+request.getFirstName ());
+        System.out.println("Demo for DevOps");
+        System.out.println("Demo 2");
         return reqRepo.save(request);
     }
 }
